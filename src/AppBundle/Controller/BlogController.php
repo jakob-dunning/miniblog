@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Blog;
 use AppBundle\Form\BlogEdit;
 use AppBundle\Form\BlogCreate;
+use AppBundle\AppBundle;
 
 class BlogController extends Controller
 {
@@ -19,8 +20,10 @@ class BlogController extends Controller
 	 */
 	public function listAction(EntityManagerInterface $em) {
 		
-		return new Response("Show all blog entries");
+		// get all blog posts
+		$posts = $em->getRepository('AppBundle:Blog')->findAll();
 		
+		return $this->render('blog.html.twig', array('posts' => $posts));
 	}
 	
 	/**
@@ -42,7 +45,7 @@ class BlogController extends Controller
 			$imageName = md5(uniqid()).'.'.$image->guessExtension();
 			$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
 					$imageName );
-			$blog->setImage($imageName);
+			$blog->setImage($this->getParameter('image_directory') . '/' . $imageName);
 			
 			$em->persist($blog);
 			$em->flush();
