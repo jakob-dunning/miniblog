@@ -7,13 +7,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Blog;
 use AppBundle\Form\BlogEdit;
+use AppBundle\Form\BlogCreate;
 
 class BlogController extends Controller
 {
@@ -32,15 +29,8 @@ class BlogController extends Controller
 	public function createAction(Request $request, EntityManagerInterface $em) {
 		
 		$blog = new Blog();
-		
-		/*$form = $this->createFormBuilder(new Blog())
-			->add('image', FileType::class)
-			->add('title', TextType::class)
-			->add('text', TextareaType::class)
-			->add('save', SubmitType::class, array('label' => 'Save'))
-			->getForm();
-		*/
-		$form = $this->createForm(BlogEdit::class, new Blog());
+
+		$form = $this->createForm(BlogCreate::class, $blog);
 		
 		$form->handleRequest($request);
 		
@@ -56,9 +46,12 @@ class BlogController extends Controller
 			
 			$em->persist($blog);
 			$em->flush();
+			
+			// get the ID of our newly created blog entry and go to show mode
+			return $this->redirectToRoute('entry_show', array('id' => $blog->getId()));
 		}
 
-		return $this->render('create.html.twig', array('form' => $form->createView()));
+		return $this->render('form.html.twig', array('form' => $form->createView()));
 		
 	}
 	
@@ -67,8 +60,19 @@ class BlogController extends Controller
 	 */
 	public function editAction(EntityManagerInterface $em, $id) {
 		
-		return new Response("Editing blog entry #" . $id);
+		// grab blog entry from DB
+		$blog = $em->getRepository('AppBundle:Blog')
+			->find($id);
 		
+		// 404 if id doesn't match anything in the database
+		if(!$blog) {
+			throw $this->createNotFoundException('No blog entry found for id ' . $id . '.');
+		}
+		
+		// create form and populate it
+		$form = $this->createForm(BlogEdit::class, $blog);
+		
+		return $this->render('form.html.twig', array('form' => $form->createView()));
 	}
 	
 	/**
