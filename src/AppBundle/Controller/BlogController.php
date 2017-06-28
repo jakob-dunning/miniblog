@@ -5,7 +5,6 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Blog;
+use AppBundle\Form\BlogEdit;
 
 class BlogController extends Controller
 {
@@ -33,19 +33,21 @@ class BlogController extends Controller
 		
 		$blog = new Blog();
 		
-		$form = $this->createFormBuilder(new Blog())
+		/*$form = $this->createFormBuilder(new Blog())
 			->add('image', FileType::class)
 			->add('title', TextType::class)
 			->add('text', TextareaType::class)
 			->add('save', SubmitType::class, array('label' => 'Save'))
 			->getForm();
+		*/
+		$form = $this->createForm(BlogEdit::class, new Blog());
 		
 		$form->handleRequest($request);
 		
 		if($form->isSubmitted() && $form->isValid()) {
 			$blog = $form->getData();
 			
-			// get the image file
+			// get the image file and save the correct path
 			$image = $blog->getImage();
 			$imageName = md5(uniqid()).'.'.$image->guessExtension();
 			$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
