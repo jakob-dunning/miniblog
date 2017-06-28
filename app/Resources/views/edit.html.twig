@@ -4,6 +4,7 @@
 
 {% block body %}
 	<h1>Edit post "{{ post.title }}"</h1>
+	<img src="{{ post.image }}" />
 	{{ form_start(form) }}
 	{{ form_widget(form) }}
 	{{ form_end(form) }}

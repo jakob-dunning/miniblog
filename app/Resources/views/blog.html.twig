@@ -17,5 +17,10 @@
 			    {{ post.text }}
 		    </p>
 		</article>
+		<nav>
+			<ul>
+				<li><a href="/edit/{{ post.id }}">Edit this post</a></li>
+			</ul>
+		</nav>
 	{% endfor %}
 {% endblock %}
