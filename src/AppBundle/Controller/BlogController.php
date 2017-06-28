@@ -66,7 +66,7 @@ class BlogController extends Controller
 	/**
 	 * @Route("/edit/{id}", name="entry_edit", requirements={"id":"\d+"})
 	 */
-	public function editAction(EntityManagerInterface $em, $id) {
+	public function editAction(Request $request, EntityManagerInterface $em, $id) {
 		
 		// grab blog entry from DB
 		$blog = $em->getRepository('AppBundle:Blog')
@@ -79,6 +79,27 @@ class BlogController extends Controller
 		
 		// create form and populate it
 		$form = $this->createForm(BlogEdit::class, $blog);
+		
+		$form->handleRequest($request);
+		
+		if($form->isSubmitted() && $form->isValid()) {
+			$blog = $form->getData();
+			
+			// get the image file and save the correct path
+			/*
+			$image = $blog->getImage();
+			$imageName = md5(uniqid()).'.'.$image->guessExtension();
+			$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
+					$imageName );
+			$blog->setImage($this->getParameter('image_directory') . '/' . $imageName);
+			*/
+			
+			$em->persist($blog);
+			$em->flush();
+			
+			// get the ID of our newly created blog entry and go to show mode
+			return $this->redirectToRoute('entry_edit', array('id' => $blog->getId()));
+		}
 		
 		return $this->render('edit.html.twig', array('form' => $form->createView(), 'post' => $blog));
 	}
