@@ -1,4 +1,9 @@
 <?php
+// TODO
+// add paginator to facilitate next, previous entry
+// add constraints to form fields?
+// add Date / Map field to posts?
+
 // src/AppBundle/Controller/BlogController.php
 namespace AppBundle\Controller;
 
@@ -54,7 +59,7 @@ class BlogController extends Controller
 			return $this->redirectToRoute('entry_show', array('id' => $blog->getId()));
 		}
 
-		return $this->render('form.html.twig', array('form' => $form->createView()));
+		return $this->render('create.html.twig', array('form' => $form->createView()));
 		
 	}
 	
@@ -75,7 +80,7 @@ class BlogController extends Controller
 		// create form and populate it
 		$form = $this->createForm(BlogEdit::class, $blog);
 		
-		return $this->render('form.html.twig', array('form' => $form->createView()));
+		return $this->render('edit.html.twig', array('form' => $form->createView(), 'post' => $blog));
 	}
 	
 	/**
@@ -85,6 +90,7 @@ class BlogController extends Controller
 		
 		$blogEntry = $em->getRepository('AppBundle\Entity\Blog')
 			->find($id);
+		
 		
 		if (!$blogEntry) {
 			throw $this->createNotFoundException(
