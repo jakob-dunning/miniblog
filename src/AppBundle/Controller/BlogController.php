@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use AppBundle\Entity\Blog;
 use AppBundle\Form\BlogEdit;
 use AppBundle\Form\BlogCreate;
 use AppBundle\AppBundle;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class BlogController extends Controller
 {
@@ -80,6 +82,9 @@ class BlogController extends Controller
 			throw $this->createNotFoundException('No blog entry found for id ' . $id . '.');
 		}
 		
+		// recreate our file field - right now, it's just a file path
+		$blog->setImage( new File($blog->getImage(), false) );
+		
 		// create form and populate it
 		$form = $this->createForm(BlogEdit::class, $blog);
 		
@@ -100,13 +105,13 @@ class BlogController extends Controller
 			$blog = $form->getData();
 			
 			// get the image file and save the correct path
-			/*
+			
 			$image = $blog->getImage();
 			$imageName = md5(uniqid()).'.'.$image->guessExtension();
 			$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
 					$imageName );
 			$blog->setImage($this->getParameter('image_directory') . '/' . $imageName);
-			*/
+			
 			
 			$em->persist($blog);
 			$em->flush();

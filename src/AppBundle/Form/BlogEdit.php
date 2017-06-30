@@ -13,7 +13,7 @@ class BlogEdit extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
-		->add('image', TextType::class)
+		->add('image', FileType::class)
 		->add('title', TextType::class)
 		->add('text', TextareaType::class)
 		->add('save', SubmitType::class, array('label' => 'Save'))
