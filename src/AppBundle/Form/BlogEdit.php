@@ -16,6 +16,7 @@ class BlogEdit extends AbstractType
 		->add('image', TextType::class)
 		->add('title', TextType::class)
 		->add('text', TextareaType::class)
-		->add('save', SubmitType::class, array('label' => 'Save'));
+		->add('save', SubmitType::class, array('label' => 'Save'))
+		->add('delete', SubmitType::class, array('label' => 'Delete'));
 	}
 }

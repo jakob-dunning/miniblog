@@ -3,6 +3,7 @@
 // add paginator to facilitate next, previous entry
 // add constraints to form fields?
 // add Date / Map field to posts?
+// add safeguard to deletion process
 
 // src/AppBundle/Controller/BlogController.php
 namespace AppBundle\Controller;
@@ -68,6 +69,8 @@ class BlogController extends Controller
 	 */
 	public function editAction(Request $request, EntityManagerInterface $em, $id) {
 		
+		// do authorization check
+		
 		// grab blog entry from DB
 		$blog = $em->getRepository('AppBundle:Blog')
 			->find($id);
@@ -83,6 +86,17 @@ class BlogController extends Controller
 		$form->handleRequest($request);
 		
 		if($form->isSubmitted() && $form->isValid()) {
+			
+			//check which button was clicked
+			if($form->get('delete')->isClicked()) {
+				
+				// delete post
+				$em->remove($blog);
+				$em->flush();
+				
+				return $this->redirectToRoute('blog_show');
+			}
+			
 			$blog = $form->getData();
 			
 			// get the image file and save the correct path
