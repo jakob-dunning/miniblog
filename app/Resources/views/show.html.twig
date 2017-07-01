@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blog title | {{ entry.title }}{% endblock %}
+{% block title %}{{ blog_title }} | {{ post.title }}{% endblock %}
 
 {% block body %}
 	<article>
-		<h1>{{ entry.title }}</h1>
-		<img src="{{ entry.image }}" />
+		<h1>{{ post.title }}</h1>
+		<img src="{{ post.image }}" />
     	<p>
-    		{{ entry.text }}
+    		{{ post.text }}
     	</p>
 	</article>
 {% endblock %}

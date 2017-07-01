@@ -36,7 +36,7 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @Route("/create", name="entry_create")
+	 * @Route("/create", name="post_create")
 	 */
 	public function createAction(Request $request, EntityManagerInterface $em) {
 		
@@ -60,7 +60,7 @@ class BlogController extends Controller
 			$em->flush();
 			
 			// get the ID of our newly created blog entry and go to show mode
-			return $this->redirectToRoute('entry_show', array('id' => $blog->getId()));
+			return $this->redirectToRoute('post_show', array('id' => $blog->getId()));
 		}
 
 		return $this->render('create.html.twig', array('form' => $form->createView()));
@@ -68,7 +68,7 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @Route("/edit/{id}", name="entry_edit", requirements={"id":"\d+"})
+	 * @Route("/edit/{id}", name="post_edit", requirements={"id":"\d+"})
 	 */
 	public function editAction(Request $request, EntityManagerInterface $em, $id) {
 		
@@ -123,27 +123,27 @@ class BlogController extends Controller
 			$em->flush();
 			
 			// get the ID of our newly created blog entry and go to show mode
-			return $this->redirectToRoute('entry_edit', array('id' => $blog->getId()));
+			return $this->redirectToRoute('post_edit', array('id' => $blog->getId()));
 		}
 		
 		return $this->render('edit.html.twig', array('form' => $form->createView(), 'post' => $blog));
 	}
 	
 	/**
-	 * @Route("/show/{id}", name="entry_show", requirements={"id":"\d+"})
+	 * @Route("/show/{id}", name="post_show", requirements={"id":"\d+"})
 	 */
 	public function showAction(EntityManagerInterface $em, $id) {
 		
-		$blogEntry = $em->getRepository('AppBundle\Entity\Blog')
+		$post = $em->getRepository('AppBundle\Entity\Blog')
 			->find($id);
 		
 		
-		if (!$blogEntry) {
+		if (!$post) {
 			throw $this->createNotFoundException(
 					'No entry found for id '.$id
 					);
 		}
-		return $this->render('show.html.twig', array('entry' => $blogEntry));
+		return $this->render('show.html.twig', array('post' => $post));
 		
 	}
 }

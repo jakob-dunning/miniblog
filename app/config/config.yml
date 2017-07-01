@@ -42,6 +42,7 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         image_directory: '%image_directory%'
+        blog_title: '%blog_title%'
 
 # Doctrine Configuration
 doctrine:
