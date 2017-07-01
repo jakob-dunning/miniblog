@@ -4,6 +4,7 @@
 // add constraints to form fields?
 // add Date / Map field to posts?
 // add safeguard to deletion process
+// don't validate deletions
 
 // src/AppBundle/Controller/BlogController.php
 namespace AppBundle\Controller;
@@ -82,8 +83,11 @@ class BlogController extends Controller
 			throw $this->createNotFoundException('No blog entry found for id ' . $id . '.');
 		}
 		
-		// recreate our file field - right now, it's just a file path
+		// recreate the file handler to satisfy the requierements
 		$blog->setImage( new File($blog->getImage(), false) );
+		
+		// keep the old image
+		$image_tmp = $blog->getImage();
 		
 		// create form and populate it
 		$form = $this->createForm(BlogEdit::class, $blog);
@@ -104,13 +108,16 @@ class BlogController extends Controller
 			
 			$blog = $form->getData();
 			
-			// get the image file and save the correct path
-			
-			$image = $blog->getImage();
-			$imageName = md5(uniqid()).'.'.$image->guessExtension();
-			$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
-					$imageName );
-			$blog->setImage($this->getParameter('image_directory') . '/' . $imageName);
+			if($blog->getImage()) {
+				// get the image file and save the correct path
+				$image = $blog->getImage();
+				$imageName = md5(uniqid()).'.'.$image->guessExtension();
+				$image->move( $this->getParameter('files_directory') . $this->getParameter('image_directory'),
+						$imageName );
+				$blog->setImage($this->getParameter('image_directory') . '/' . $imageName);
+			} else {
+				$blog->setImage($image_tmp);
+			}
 			
 			
 			$em->persist($blog);
