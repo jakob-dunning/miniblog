@@ -75,8 +75,7 @@ class BlogController extends Controller
 		// do authorization check
 		
 		// grab blog entry from DB
-		$blog = $em->getRepository('AppBundle:Blog')
-			->find($id);
+		$blog = $em->getRepository('AppBundle:Blog')->find($id);
 		
 		// 404 if id doesn't match anything in the database
 		if(!$blog) {
@@ -108,6 +107,7 @@ class BlogController extends Controller
 			
 			$blog = $form->getData();
 			
+			// only perform if we have a new image
 			if($blog->getImage()) {
 				// get the image file and save the correct path
 				$image = $blog->getImage();
@@ -118,7 +118,6 @@ class BlogController extends Controller
 			} else {
 				$blog->setImage($image_tmp);
 			}
-			
 			
 			$em->persist($blog);
 			$em->flush();

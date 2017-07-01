@@ -19,17 +19,20 @@ class Blog {
 	/**
 	 * @ORM\Column(type="string")
 	 * @Assert\NotBlank()
+	 * @Assert\Type("string")
 	 */
 	private $title;
 	
 	/**
 	 * @ORM\Column(type="string")
+	 * @Assert\Image()
 	 */
 	private $image;
 	
 	/**
 	 * @ORM\Column(type="text")
 	 * @Assert\NotBlank()
+	 * @Assert\Type("string")
 	 */
 	private $text;
 
