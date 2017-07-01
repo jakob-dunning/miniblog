@@ -2,23 +2,19 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\User as BaseUser;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="fos_users")
  */
-class User {
+class User extends BaseUser {
 	/**
 	 * @ORM\Column(type="integer")
 	 * @ORM\Id
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $id;
-	
-	/**
-	 * @ORM\Column(type="string")
-	 */
-	private $username;
+	protected $id;
 
     /**
      * Get id
@@ -42,15 +38,5 @@ class User {
         $this->username = $username;
 
         return $this;
-    }
-
-    /**
-     * Get username
-     *
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
     }
 }
